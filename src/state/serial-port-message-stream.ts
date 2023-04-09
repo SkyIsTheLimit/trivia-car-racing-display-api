@@ -19,6 +19,7 @@ export class SerialPortMessageStream extends MessageStream {
       this.receiveMessage(message);
     }
   }
+
   disconnect() {
     if (this.sp) {
       this.sp.close();
