@@ -1,29 +1,36 @@
-export type GameState = 'not-started' | 'waiting-1' | 'waiting-2' | 'finished';
-
+export type GameStatus = 'pre-game' | 'in-game' | 'post-game';
+export type QuestionStatus = 'pre-question' | 'live-question' | 'post-question';
+export type GameDifficulty = 'easy' | 'medium' | 'hard';
+export type MenuScreen = 'splash-screen' | 'difficulty-screen' | 'start-screen';
 export interface Question {
   text: string;
   choices: [string, string, string, string];
   answer: string;
 }
+export type Winner = 'no-winner' | 'player-1' | 'player-2' | 'tie';
 
 export interface Round {
-  id: number;
+  status: QuestionStatus;
+  questionIndex: number;
   question: Question;
   p1Answer?: string;
   p2Answer?: string;
 }
 
 export interface Menu {
-  title: string;
   options: string[];
-  highlighted: number;
+  selectedIndex: number;
 }
 
-export interface Game {
-  state: GameState;
-  difficulty: 'easy' | 'medium' | 'hard';
-  rounds: Round[];
+export interface GameState {
+  state: GameStatus;
+  menuScreen: MenuScreen;
+  lapCounts: {
+    player1: number;
+    player2: number;
+  };
+  difficulty: GameDifficulty;
   currentRound?: Round;
-  questionNo: number;
   menu: Menu;
+  winner: Winner;
 }
