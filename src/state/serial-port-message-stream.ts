@@ -49,13 +49,18 @@ export class SerialPortMessageStream extends MessageStream {
 
       this.sp.on('data', (_chunk: Buffer) => {
         const text = _chunk.toString();
+        let isWaiting = false;
+
+        console.log(text);
 
         for (let i = 0; i < text.length; i++) {
           const ch = text.charAt(i);
 
           if (ch === '[') {
             temp = '';
-          } else if (ch === ']') {
+            isWaiting = true;
+          } else if (ch === ']' && isWaiting) {
+            // console.log('[INCOMING] >>>> ##', temp, '##');
             this.messageQueue.push({
               time: new Date().toISOString(),
               message: temp,
@@ -66,6 +71,8 @@ export class SerialPortMessageStream extends MessageStream {
             if (this.messageQueue.length > 10) {
               this.messageQueue.shift();
             }
+
+            isWaiting = false;
           } else {
             temp += ch;
           }
@@ -86,5 +93,12 @@ export class SerialPortMessageStream extends MessageStream {
 
   isRunning() {
     return this.isSerialPortRunning;
+  }
+
+  send(message: string): void {
+    console.log('Sending answer backto arduino', message);
+    if (this.sp) {
+      this.sp.write(message);
+    }
   }
 }

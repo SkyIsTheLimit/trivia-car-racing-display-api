@@ -23,7 +23,7 @@ export const ArduinoStates = {
     'difficulty-screen',
     'start-screen',
   ] as MenuScreen[],
-  GameDifficulty: ['easy', 'easy', 'medium', 'hard'] as GameDifficulty[],
+  GameDifficulty: ['not-set', 'easy', 'medium', 'hard'] as GameDifficulty[],
   Winner: ['no-winner', 'player-1', 'player-2', 'tie'] as Winner[],
 };
 
@@ -61,7 +61,7 @@ export function parseArduinoStateFromMesageString(
   messageString: string,
 ): ArduinoState {
   const packet = messageString
-    .substring(1, messageString.length - 1)
+    // .substring(1, messageString.length - 1)
     .split(',')
     .map((ch) => +ch);
 
@@ -80,6 +80,7 @@ export function parseArduinoStateFromMesageString(
     winner,
   ] = packet;
 
+  // console.log('In Parse', gameStatus, ArduinoStates.GameStatus[gameStatus]);
   return {
     gameStatus: ArduinoStates.GameStatus[gameStatus],
     questionStatus: ArduinoStates.QuestionStatus[questionStatus],
@@ -105,8 +106,14 @@ export function mapArduinoStateToGameState(
 
   const currentRound: Round = {
     status: arduinoState.questionStatus,
-    questionIndex: arduinoState.questionIndex,
-    question: questions[difficulty][arduinoState.questionIndex],
+    questionIndex:
+      difficulty !== 'not-set'
+        ? arduinoState.questionIndex % questions[difficulty].length
+        : -1,
+    question:
+      difficulty !== 'not-set'
+        ? questions[difficulty][arduinoState.questionIndex]
+        : null,
     p1Answer:
       arduinoState.player1Answer === 0
         ? undefined

@@ -5,6 +5,7 @@ import {
   mapArduinoStateToGameState,
   parseArduinoStateFromMesageString,
 } from './arduino-state';
+import { questions } from './questions';
 
 @Injectable()
 export class AppService {
@@ -36,10 +37,34 @@ export class AppService {
     if (!this.isRegistered) {
       this.messageStream.on('message', (message) => {
         const arduinoState = parseArduinoStateFromMesageString(message);
+
         this.gameState = mapArduinoStateToGameState(
           arduinoState,
           this.gameState,
         );
+
+        // console.log(
+        //   'Question Index',
+        //   this.gameState.currentRound.questionIndex,
+        // );
+
+        if (
+          this.gameState.state === 'pre-game' &&
+          this.gameState.difficulty !== 'not-set'
+        ) {
+          this.messageStream.send(
+            this.gameState.currentRound.question.answer + '\n',
+          );
+        } else if (
+          // this.gameState.currentRound.status === 'pre-question' ||
+          this.gameState.currentRound.status === 'post-question'
+        ) {
+          this.messageStream.send(
+            questions[this.gameState.difficulty][
+              this.gameState.currentRound.questionIndex + 1
+            ].answer || -1 + '\n',
+          );
+        }
       });
       this.isRegistered = true;
 

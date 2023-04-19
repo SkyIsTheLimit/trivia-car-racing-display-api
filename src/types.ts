@@ -1,6 +1,6 @@
 export type GameStatus = 'pre-game' | 'in-game' | 'post-game';
 export type QuestionStatus = 'pre-question' | 'live-question' | 'post-question';
-export type GameDifficulty = 'easy' | 'medium' | 'hard';
+export type GameDifficulty = 'not-set' | 'easy' | 'medium' | 'hard';
 export type MenuScreen = 'splash-screen' | 'difficulty-screen' | 'start-screen';
 export interface Question {
   text: string;

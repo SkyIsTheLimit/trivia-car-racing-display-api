@@ -18,10 +18,12 @@ export abstract class MessageStream {
   }
 
   receiveMessage(message: string) {
+    this.callbacks['message'] = this.callbacks['message'] || [];
     this.callbacks['message'].forEach((callback) => callback(message));
   }
 
   abstract connect(): void;
   abstract disconnect(): void;
   abstract isRunning(): boolean;
+  abstract send(message: string): void;
 }

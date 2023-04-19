@@ -12,7 +12,9 @@ export class AppController {
       this.logger.debug('Running in DEV_MODE. Using mock message stream.');
       this.appService.setMessageStream(new MockMessageStream());
     } else {
-      this.logger.log('Connecting to serial port for messages.');
+      this.logger.log(
+        'Connecting to serial port for messages. ' + process.env.SERIAL_PORT,
+      );
       this.appService.setMessageStream(new SerialPortMessageStream());
     }
   }
