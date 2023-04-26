@@ -22,7 +22,7 @@ const easyQuestions: Question[] = [
     answer: 'A',
   },
   {
-    text: 'In which city did the Olympic games originate?',
+    text: 'In which country did the Olympic games originate?',
     choices: ['Japan', 'USA', 'Greece', 'Russia'],
     answer: 'C',
   },
@@ -43,12 +43,12 @@ const easyQuestions: Question[] = [
   },
   {
     text: 'Who was the ancient Greek goddess of love?',
-    choices: ['Aphrodite', 'Venus', 'Athena', 'Artemi'],
+    choices: ['Aphrodite', 'Venus', 'Athena', 'Artemis'],
     answer: 'A',
   },
   {
     text: 'What ancient people worshipped cats?',
-    choices: ['Egyptians', 'Mayans', 'Aztecs', 'Persia'],
+    choices: ['Egyptians', 'Mayans', 'Aztecs', 'Persians'],
     answer: 'A',
   },
   {
@@ -65,7 +65,7 @@ const mediumQuestions: Question[] = [
     answer: 'A',
   },
   {
-    text: 'How many planets are in our solar system',
+    text: 'How many planets are in our solar system?',
     choices: ['One hundred', 'Infinite', 'Twelve', 'Eight'],
     answer: 'D',
   },
@@ -85,7 +85,7 @@ const mediumQuestions: Question[] = [
     answer: 'B',
   },
   {
-    text: 'Which blood cells fights diseases',
+    text: 'Which blood cells fights diseases?',
     choices: ['Red blood cells', 'White blood cells', 'Stem cells', 'Platelet'],
     answer: 'B',
   },
@@ -134,7 +134,7 @@ const hardQuestions: Question[] = [
   },
   {
     text: 'How much is the diameter of a basketball hoop?',
-    choices: ['1 meter', '72 mm', '18 inches', '10 inc'],
+    choices: ['1 meter', '72 mm', '18 inches', '10 inches'],
     answer: 'C',
   },
   {

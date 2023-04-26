@@ -40,6 +40,7 @@ export type ArduinoMessagePacket = [
   number,
   number,
   number,
+  number,
 ];
 
 export interface ArduinoState {
@@ -55,15 +56,13 @@ export interface ArduinoState {
   startMenuOption: number;
   endMenuOption: number;
   winner: number;
+  answerRequest: number;
 }
 
 export function parseArduinoStateFromMesageString(
   messageString: string,
 ): ArduinoState {
-  const packet = messageString
-    // .substring(1, messageString.length - 1)
-    .split(',')
-    .map((ch) => +ch);
+  const packet = messageString.split(',').map((ch) => +ch);
 
   const [
     gameStatus,
@@ -78,9 +77,9 @@ export function parseArduinoStateFromMesageString(
     startMenuOption,
     endMenuOption,
     winner,
+    answerRequest,
   ] = packet;
 
-  // console.log('In Parse', gameStatus, ArduinoStates.GameStatus[gameStatus]);
   return {
     gameStatus: ArduinoStates.GameStatus[gameStatus],
     questionStatus: ArduinoStates.QuestionStatus[questionStatus],
@@ -94,52 +93,66 @@ export function parseArduinoStateFromMesageString(
     startMenuOption,
     endMenuOption,
     winner,
+    answerRequest,
   };
 }
 
 export function mapArduinoStateToGameState(
-  arduinoState: ArduinoState,
+  {
+    gameStatus,
+    questionStatus,
+    questionIndex,
+    player1LapCount,
+    player2LapCount,
+    player1Answer,
+    player2Answer,
+    menuScreen,
+    difficultyMenuOption,
+    startMenuOption,
+    endMenuOption,
+    winner,
+    answerRequest,
+  }: ArduinoState,
   game: GameState,
 ): GameState {
-  const difficulty =
-    ArduinoStates.GameDifficulty[arduinoState.difficultyMenuOption];
+  const difficulty = ArduinoStates.GameDifficulty[difficultyMenuOption];
+  const _questionIndex =
+    difficulty !== 'not-set' ? questionIndex % questions[difficulty].length : 0;
 
   const currentRound: Round = {
-    status: arduinoState.questionStatus,
-    questionIndex:
-      difficulty !== 'not-set'
-        ? arduinoState.questionIndex % questions[difficulty].length
-        : -1,
+    status: questionStatus,
+    questionIndex: difficulty !== 'not-set' ? _questionIndex : -1,
     question:
-      difficulty !== 'not-set'
-        ? questions[difficulty][arduinoState.questionIndex]
-        : null,
+      difficulty !== 'not-set' ? questions[difficulty][_questionIndex] : null,
     p1Answer:
-      arduinoState.player1Answer === 0
+      player1Answer === 0
         ? undefined
-        : String.fromCharCode(65 + arduinoState.player1Answer - 1) ||
+        : String.fromCharCode(65 + player1Answer - 1) ||
           game.currentRound.p1Answer,
     p2Answer:
-      arduinoState.player2Answer === 0
+      player2Answer === 0
         ? undefined
-        : String.fromCharCode(65 + arduinoState.player2Answer - 1) ||
+        : String.fromCharCode(65 + player2Answer - 1) ||
           game.currentRound.p2Answer,
   };
   const menu: Menu = {
     options: ['Easy', 'Medium', 'Hard'],
-    selectedIndex: arduinoState.difficultyMenuOption,
+    selectedIndex: difficultyMenuOption,
   };
 
   return {
-    state: arduinoState.gameStatus,
-    menuScreen: arduinoState.menuScreen,
+    state: gameStatus,
+    menuScreen,
     lapCounts: {
-      player1: arduinoState.player1LapCount,
-      player2: arduinoState.player2LapCount,
+      player1: player1LapCount,
+      player2: player2LapCount,
     },
     difficulty,
     currentRound,
     menu,
-    winner: ArduinoStates.Winner[arduinoState.winner],
+    winner: ArduinoStates.Winner[winner],
+    startMenuOption,
+    endMenuOption,
+    answerRequest,
   };
 }

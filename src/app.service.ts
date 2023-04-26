@@ -43,25 +43,15 @@ export class AppService {
           this.gameState,
         );
 
-        // console.log(
-        //   'Question Index',
-        //   this.gameState.currentRound.questionIndex,
-        // );
-
-        if (
-          this.gameState.state === 'pre-game' &&
-          this.gameState.difficulty !== 'not-set'
-        ) {
+        if (this.gameState.answerRequest === 1) {
           this.messageStream.send(
             this.gameState.currentRound.question.answer + '\n',
           );
-        } else if (
-          // this.gameState.currentRound.status === 'pre-question' ||
-          this.gameState.currentRound.status === 'post-question'
-        ) {
+        } else if (this.gameState.currentRound.status === 'post-question') {
           this.messageStream.send(
             questions[this.gameState.difficulty][
-              this.gameState.currentRound.questionIndex + 1
+              (this.gameState.currentRound.questionIndex + 1) %
+                questions[this.gameState.difficulty].length
             ].answer || -1 + '\n',
           );
         }
